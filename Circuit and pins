@@ -1,0 +1,44 @@
+🧠 1. ESP32 Pin Connection Table
+Component	Pin on Module	Connect To (ESP32)	Notes / Function
+MPU6050	VCC	3.3 V	Power the sensor (some modules accept 5 V but 3.3 V is safer)
+	GND	GND	Common ground
+	SDA	GPIO 21	I²C Data line
+	SCL	GPIO 22	I²C Clock line
+L298N Motor Driver	IN1	GPIO 26	Motor A direction control
+	IN2	GPIO 27	Motor A direction control
+	IN3	GPIO 14	Motor B direction control
+	IN4	GPIO 12	Motor B direction control
+	ENA	GPIO 25	PWM for Motor A (speed control)
+	ENB	GPIO 33	PWM for Motor B (speed control)
+	5 V (logic)	5 V (from ESP32 VIN or buck converter)	For driver logic circuit
+	GND	GND	Must share common ground with ESP32
+	+12 V (motor VCC)	Battery + (7.4 V–12 V)	Motor power supply
+DC Motors	Motor A +, –	To L298N Motor A output pins	Connect according to rotation direction
+	Motor B +, –	To L298N Motor B output pins	
+Battery	+ terminal	To L298N +12 V input	Motor power
+	– terminal	To ESP32 GND + L298N GND	Common ground
+Bluetooth	(Built into ESP32)	—	Controlled via mobile app
+
+
+
+⚙️ 2. Power Connection Overview
+
+Motor Power (7.4 V–12 V) → L298N +12 V
+
+ESP32 Power → 5 V pin (from L298N 5 V regulator if stable) or from a separate DC-DC buck converter (7.4 V → 5 V).
+
+Grounds must be common → Connect ESP32 GND ↔ L298N GND ↔ Battery –.
+
+
+
+🪛 3. Working Flow
+
+MPU6050 measures tilt and sends data via I²C (GPIO 21 & 22).
+
+ESP32 processes this and runs PID algorithm.
+
+PWM signals from GPIO 25 & 33 control motor speed via L298N.
+
+Bluetooth in ESP32 receives commands from your phone to move Forward/Backward/Left/Right.
+
+Motors correct balance dynamically by adjusting wheel speed.
